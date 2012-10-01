@@ -1,13 +1,13 @@
-package daily;
 public class Record {
 	private String name;
 	private int tries;
 	private double time;
+	private boolean real;
 	
 	public static final String nullName = "----------";
 	public static final int nullTries = 999;
 	public static final double nullTime = 999;
-	public Record(String givenName, int givenTries, double givenTime) {
+	public Record(String givenName, int givenTries, double givenTime, boolean realPlayer) {
 		if (givenName.length() > 10) {
 			name = givenName.substring(0, 10);
 		} else {
@@ -15,6 +15,7 @@ public class Record {
 		}
 		tries = givenTries;
 		time = givenTime;
+		real = realPlayer;
 	}
 	
 	public int getTries() {
@@ -29,8 +30,12 @@ public class Record {
 		return name;
 	}
 	
+	public boolean getStatus() {
+		return real;
+	}
+	
 	public void printString() {
-		if (this.name.equalsIgnoreCase(Record.nullName)) {
+		if (!real) {
 			System.out.printf("*Name: %1$-10s Tries: %2$-3s Time: %3$-7s*", "----------", "---", "-------");
 		} else {
 			System.out.printf("*Name: %1$-10s Tries: %2$03d Time: %3$07.3f*", name, tries, time);
@@ -39,6 +44,10 @@ public class Record {
 	
 	public Record[] sort(Record[] top10) {
 		for (int i = 0; i < top10.length; i++) {
+			if (this.real && !top10[i].getStatus()) {
+				top10[i] = this;
+				return top10;
+			}
 			if (this.tries < top10[i].getTries()) {
 				return this.swap(i, top10);
 			} else {
